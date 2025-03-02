@@ -7,3 +7,9 @@ abstract class ApiEvent extends Equatable{
 }
 
 class FetchData extends ApiEvent{}
+
+class SearchItem extends ApiEvent{
+
+ final String emailSearched;
+ SearchItem(this.emailSearched);
+}

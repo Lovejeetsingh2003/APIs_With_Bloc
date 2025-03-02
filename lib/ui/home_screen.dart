@@ -33,19 +33,44 @@ class _HomeScreenState extends State<HomeScreen> {
                 case ApiStatus.failure:
                   return Center(child: Text(state.message.toString()),);
                 case ApiStatus.success:
-                  return ListView.builder(
-                      itemCount: state.apiDataModel.length,
-                      itemBuilder: (context,index){
-                        final item = state.apiDataModel[index];
-                        return Card(
-                    child: ListTile(
-                      title: Text(item.email.toString()),
-                      subtitle: Text(item.body.toString()),
-                    ),
-                  );
-              }
+                  return Column(
+                    children: [
+                      TextFormField(
+                        onChanged: (filterKey){
+                          context.read<ApiBloc>().add(SearchItem(filterKey));
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Search From Email',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)
+                          )
+                        ),
+                      ),
+                      Expanded(child:state.searchMessage.isNotEmpty?Center(child: Text(state.searchMessage.toString()),): ListView.builder(
+                          itemCount: state.tempApiDataModel.isEmpty ? state.apiDataModel.length : state.tempApiDataModel.length,
+                          itemBuilder: (context,index){
+                           if(state.tempApiDataModel.isNotEmpty){
+                             final item = state.tempApiDataModel[index] ;
+                             return Card(
+                               child: ListTile(
+                                 title: Text(item.email.toString()),
+                                 subtitle: Text(item.body.toString()),
+                               ),
+                             );
+                           }else{
+                             final item = state.apiDataModel[index] ;
+                             return Card(
+                               child: ListTile(
+                                 title: Text(item.email.toString()),
+                                 subtitle: Text(item.body.toString()),
+                               ),
+                             );
+                           }
+                          }
 
-                  );}
+                      ))
+                    ],
+                  ); }
       })
     );
   }
